@@ -1,5 +1,4 @@
 const jwt = require("jsonwebtoken")
-const {InvalidLoginError, UnauthorisedError, ForbiddenError} = require("../errors/classes");
 
 exports.generateJWT = (user, service) => {
     const payload = {
@@ -10,26 +9,4 @@ exports.generateJWT = (user, service) => {
     };
 
     return jwt.sign(payload, process.env.JWT_KEY, {algorithm: 'HS256'});
-}
-
-exports.authenticateJWT = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    try {
-        if (!token) {
-            throw new UnauthorisedError("No JWT provided")
-        }
-
-        jwt.verify(token, process.env.JWT_KEY, (err, user) => {
-            if (err) {
-                throw new ForbiddenError("Invalid JWT provided")
-            }
-
-            req.user = user;
-            next();
-        });
-    } catch (error) {
-        next(error)
-    }
 }

@@ -8,7 +8,6 @@ const logger = require('morgan');
 const cors = require('cors')
 const {postSignUp, postLogin} = require("./controllers/controllers");
 const {handleCustomErrors, handlePostgresErrors, handle500Errors} = require("./errors/middleware");
-const {authenticateJWT} = require("./jwt/jwt");
 
 // setup
 const app = express();
@@ -24,12 +23,6 @@ app.use(express.urlencoded({extended: false}));
 app.post("/sign-up", postSignUp)
 
 app.post("/login", postLogin)
-
-app.use(authenticateJWT)
-
-app.get("/hello", (request, response, next) => {
-    response.status(200).send({msg: "hello"})
-})
 
 // error-handling middleware
 app.use(handleCustomErrors)
