@@ -6,7 +6,7 @@ const getService = async (service) => {
     const service_rows = await db.query(`
         SELECT *
         FROM services
-        WHERE service_name = $1
+        WHERE service_name = $1;
     `, [service])
 
     if (!service_rows.rows.length) {
