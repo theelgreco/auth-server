@@ -2,19 +2,23 @@ const {db} = require("../db/connect")
 const format = require("pg-format")
 const {ValidationError, InvalidLoginError} = require("../errors/classes");
 
+const getService = async (service) => {
+    const service_rows = await db.query(`
+        SELECT *
+        FROM services
+        WHERE service_name = $1
+    `, [service])
+
+    if (!service_rows.rows.length) {
+        throw new ValidationError(`Service '${service}' does not exist.`);
+    }
+
+    return service_rows.rows[0]
+}
+
 exports.createNewUser = async (slug, email, username, password, service) => {
     try {
-        const service_slug_rows = await db.query(`
-            SELECT slug
-            FROM services
-            WHERE service_name = $1
-        `, [service])
-
-        if (!service_slug_rows.rows.length) {
-            throw new ValidationError(`Service '${service}' does not exist.`);
-        }
-
-        const service_slug = service_slug_rows.rows[0].slug
+        const service_slug = (await getService(service)).slug
 
         if (email) {
             const queryString = format(`
@@ -38,21 +42,10 @@ exports.createNewUser = async (slug, email, username, password, service) => {
 
 exports.getUser = async (email, username, service) => {
     try {
-        const service_slug_rows = await db.query(`
-            SELECT slug
-            FROM services
-            WHERE service_name = $1
-        `, [service])
-
-        if (!service_slug_rows.rows.length) {
-            throw new ValidationError(`Service '${service}' does not exist.`);
-        }
-
-        const service_slug = service_slug_rows.rows[0].slug
-
+        const service_slug = (await getService(service)).slug
         let user
 
-        if (email) {
+        if (email && username) {
             const userQuery = await db.query(`
                 SELECT *
                 FROM users
@@ -61,6 +54,14 @@ exports.getUser = async (email, username, service) => {
                   AND service_slug = $3;
             `, [email, username, service_slug])
             user = userQuery.rows[0]
+        } else if (email) {
+            const userQuery = await db.query(`
+                SELECT *
+                FROM users
+                WHERE email = $1
+                  AND service_slug = $2;
+            `, [email, service_slug])
+            user = userQuery.rows[0]
         } else {
             const userQuery = await db.query(`
                 SELECT *
@@ -68,10 +69,10 @@ exports.getUser = async (email, username, service) => {
                 WHERE username = $1
                   AND service_slug = $2;
             `, [username, service_slug])
-             user = userQuery.rows[0]
+            user = userQuery.rows[0]
         }
 
-        if(!user){
+        if (!user) {
             throw new InvalidLoginError("User does not exist")
         }
 

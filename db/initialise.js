@@ -41,8 +41,8 @@ const createTables = async () => {
         await db.query(`
             CREATE TABLE IF NOT EXISTS users (
                 slug VARCHAR(36) PRIMARY KEY,
-                email VARCHAR(200),
-                username VARCHAR(32) NOT NULL,
+                email VARCHAR(200) NOT NULL,
+                username VARCHAR(32),
                 password VARCHAR(200) NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
                 service_slug VARCHAR(36),
