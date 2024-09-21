@@ -69,7 +69,9 @@ const createTables = async () => {
         if(!parseInt(servicesCount)){
             await db.query(`
                 INSERT INTO services (slug, service_name)
-                VALUES ($1, 'ftp');
+                VALUES 
+                    ($1, 'ftp'),
+                    ($2, 'income_calculator');
             `, [crypto.randomUUID()])
             console.log("SEEDED services table")
         }
