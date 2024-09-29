@@ -1,27 +1,27 @@
-const {db} = require("./connect")
-const crypto = require("crypto")
+const { db } = require("./connect");
+const crypto = require("crypto");
 
 const createTables = async () => {
     // Drop the tables
-    if(process.env.NODE_ENV !== "production") {
-        try {
-            await db.query(`
-                DROP TABLE IF EXISTS users;
-            `)
-            console.log("DROPPED TABLE users")
-        } catch (err){
-            console.error(err)
-        }
+    // if(process.env.NODE_ENV !== "production") {
+    //     try {
+    //         await db.query(`
+    //             DROP TABLE IF EXISTS users;
+    //         `)
+    //         console.log("DROPPED TABLE users")
+    //     } catch (err){
+    //         console.error(err)
+    //     }
 
-        try {
-            await db.query(`
-                DROP TABLE IF EXISTS services;
-            `)
-            console.log("DROPPED TABLE services")
-        } catch (err){
-            console.error(err)
-        }
-    }
+    //     try {
+    //         await db.query(`
+    //             DROP TABLE IF EXISTS services;
+    //         `)
+    //         console.log("DROPPED TABLE services")
+    //     } catch (err){
+    //         console.error(err)
+    //     }
+    // }
 
     // Create services table if it does not exist
     try {
@@ -30,10 +30,9 @@ const createTables = async () => {
                 slug VARCHAR(36) PRIMARY KEY,
                 service_name VARCHAR(50) NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-            );`
-        )
-    } catch (err){
-        console.error(err)
+            );`);
+    } catch (err) {
+        console.error(err);
     }
 
     // Create users table if it does not exist
@@ -56,28 +55,30 @@ const createTables = async () => {
                     UNIQUE (username, service_slug),
                 CONSTRAINT unique_email_and_username_service
                     UNIQUE (username, email, service_slug)
-            );`
-        )
-    } catch (err){
-        console.error(err)
+            );`);
+    } catch (err) {
+        console.error(err);
     }
 
     // Seed services table if it is empty
     try {
         const servicesCount = (await db.query(`SELECT COUNT(*) FROM services;`)).rows[0].count;
 
-        if(!parseInt(servicesCount)){
-            await db.query(`
+        if (!parseInt(servicesCount)) {
+            await db.query(
+                `
                 INSERT INTO services (slug, service_name)
                 VALUES 
                     ($1, 'ftp'),
                     ($2, 'income_calculator');
-            `, [crypto.randomUUID()])
-            console.log("SEEDED services table")
+            `,
+                [crypto.randomUUID(), crypto.randomUUID()]
+            );
+            console.log("SEEDED services table");
         }
     } catch (err) {
         console.error(err);
     }
-}
+};
 
-module.exports = createTables
+module.exports = createTables;
