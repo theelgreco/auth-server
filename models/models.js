@@ -40,43 +40,31 @@ exports.createNewUser = async (slug, email, username, password, service) => {
     }
 }
 
-exports.getUser = async (email, username, service) => {
+exports.getUser = async (email_or_username, service) => {
     try {
         const service_slug = (await getService(service)).slug
-        let user
 
-        if (email && username) {
-            const userQuery = await db.query(`
-                SELECT *
-                FROM users
-                WHERE email = $1
-                  AND username = $2
-                  AND service_slug = $3;
-            `, [email, username, service_slug])
-            user = userQuery.rows[0]
-        } else if (email) {
-            const userQuery = await db.query(`
-                SELECT *
-                FROM users
-                WHERE email = $1
-                  AND service_slug = $2;
-            `, [email, service_slug])
-            user = userQuery.rows[0]
-        } else {
-            const userQuery = await db.query(`
+        let userQuery = await db.query(`
+            SELECT *
+            FROM users
+            WHERE email = $1
+              AND service_slug = $2;
+        `, [email_or_username, service_slug])
+
+        if (!userQuery.rows.length) {
+            userQuery = await db.query(`
                 SELECT *
                 FROM users
                 WHERE username = $1
                   AND service_slug = $2;
-            `, [username, service_slug])
-            user = userQuery.rows[0]
+            `, [email_or_username, service_slug])
         }
 
-        if (!user) {
+        if (!userQuery.rows.length) {
             throw new InvalidLoginError("User does not exist")
         }
 
-        return user
+        return userQuery.rows[0]
     } catch (error) {
         throw error
     }
