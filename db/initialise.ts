@@ -1,5 +1,5 @@
-const { db } = require("./connect");
-const crypto = require("crypto");
+import { db } from "./connect.ts";
+import crypto from "node:crypto";
 
 const createTables = async () => {
     // Drop the tables
@@ -81,4 +81,4 @@ const createTables = async () => {
     }
 };
 
-module.exports = createTables;
+export default createTables;

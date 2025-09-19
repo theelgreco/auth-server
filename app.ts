@@ -1,13 +1,16 @@
-require("dotenv").config();
-require("./db/connect");
-require("./db/initialise")();
+import("./db/connect.ts");
+
+import process from "node:process";
+import dotenv from "dotenv";
 
 // module imports
-const express = require("express");
-const logger = require("morgan");
-const cors = require("cors");
-const { postSignUp, postLogin } = require("./controllers/controllers");
-const { handleCustomErrors, handlePostgresErrors, handle500Errors } = require("./errors/middleware");
+import express from "express";
+import logger from "morgan";
+import cors from "cors";
+import { postSignUp, postLogin } from "./controllers/controllers.ts";
+import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "./errors/middleware.ts";
+
+dotenv.config();
 
 // setup
 const app = express();

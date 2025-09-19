@@ -1,39 +1,39 @@
-const emailValidator = require("email-validator");
+import emailValidator from "email-validator";
 
-exports.validAuthSignUpData = {
+export const validAuthSignUpData = {
     email: {
         type: String,
         required: true,
-        comparator(value) {
-            return emailValidator.validate(value)
-        }
+        comparator(value: any) {
+            return emailValidator.validate(value);
+        },
     },
     username: {
         type: String,
         required: false,
-        default: null
+        default: null,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     service: {
         type: String,
-        required: true
-    }
-}
+        required: true,
+    },
+};
 
-exports.validAuthLoginData = {
+export const validAuthLoginData = {
     email_or_username: {
         type: String,
         required: true,
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
     service: {
         type: String,
-        required: true
-    }
-}
+        required: true,
+    },
+};
