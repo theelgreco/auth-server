@@ -1,4 +1,4 @@
-import("../db/connect.ts");
+import("./db/connect.ts");
 
 import process from "node:process";
 import dotenv from "dotenv";
@@ -7,8 +7,8 @@ import dotenv from "dotenv";
 import express from "express";
 import logger from "morgan";
 import cors from "cors";
-import { postSignUp, postLogin } from "../controllers/controllers.ts";
-import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "../errors/middleware.ts";
+import { postSignUp, postLogin } from "./controllers/controllers.ts";
+import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "./errors/middleware.ts";
 
 dotenv.config();
 

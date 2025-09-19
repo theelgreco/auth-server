@@ -7,3 +7,4 @@ node_modules
 .idea
 .run
 .vscode
+/src/generated/prisma
