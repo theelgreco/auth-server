@@ -20,7 +20,8 @@
         "jsonwebtoken": "npm:jsonwebtoken@^9.0.2",
         "morgan": "npm:morgan@^1.10.1",
         "pg": "npm:pg@^8.16.3",
-        "pg-format": "npm:pg-format@^1.0.4"
+        "pg-format": "npm:pg-format@^1.0.4",
+        "zod": "npm:zod@^4.1.9"
     },
     "nodeModulesDir": "auto"
 }
