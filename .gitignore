@@ -6,3 +6,5 @@ node_modules
 *.iml
 .idea
 .run
+.vscode
+/src/generated/prisma

@@ -1,0 +1,35 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "deno"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Service {
+  slug         String    @id @db.VarChar(36)
+  serviceName  String    @db.VarChar(50) @map("service_name")
+  createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  users        User[]
+
+  @@map("services")
+}
+
+model User {
+  slug         String    @id @db.VarChar(36)
+  email        String    @db.VarChar(200)
+  username     String?   @db.VarChar(32)
+  password     String    @db.VarChar(200)
+  createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
+  serviceSlug  String?   @db.VarChar(36) @map("service_slug")
+  services     Service? @relation(fields: [serviceSlug], references: [slug], onDelete: Cascade, onUpdate: NoAction, map: "fk_service_slug")
+
+  @@unique([username, email, serviceSlug], map: "unique_email_and_username_service")
+  @@unique([email, serviceSlug], map: "unique_email_service")
+  @@unique([username, serviceSlug], map: "unique_username_service")
+
+  @@map("users")
+}

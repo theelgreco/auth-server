@@ -1,7 +1,8 @@
-const jwt = require("jsonwebtoken");
-const crypto = require("crypto");
+import jwt from "jsonwebtoken";
+import crypto from "node:crypto";
+import process from "node:process";
 
-exports.generateJWT = (user, service) => {
+export const generateJWT = (user, service) => {
     const payload = {
         user_id: user.slug,
         name: user.username,
