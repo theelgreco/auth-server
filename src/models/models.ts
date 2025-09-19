@@ -26,7 +26,7 @@ export const createNewUser = async (slug, email, username, password, service) =>
         if (email) {
             const queryString = format(
                 `
-                INSERT INTO users (slug, email, username, password, service_slug)
+                INSERT INTO users (slug, "email", username, password, service_slug)
                 VALUES (%L);
             `,
                 [slug, email, username, password, service_slug]
