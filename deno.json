@@ -1,8 +1,8 @@
 {
     "tasks": {
         "build": "deno run -A npm:prisma generate",
-        "start": "deno run -A npm:prisma migrate deploy; deno run --allow-all src/app.ts",
-        "dev": "deno run --allow-all --watch src/app.ts",
+        "start": "deno run -A npm:prisma migrate deploy; deno run --env-file --allow-all src/app.ts",
+        "dev": "deno run --env-file --allow-all --watch src/app.ts",
         "migrate:dev": "deno run -A npm:prisma migrate dev",
         "compile": "deno compile --allow-all --no-check src/app.ts"
     },
