@@ -20,6 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 // endpoints
+app.get("/", (req, res) => {
+    res.status(200).send({ message: "Welcome!!" });
+});
+
 app.post("/sign-up", postSignUp);
 
 app.post("/login", postLogin);
