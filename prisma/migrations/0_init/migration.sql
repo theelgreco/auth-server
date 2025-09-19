@@ -1,3 +1,6 @@
+-- CreateSchema
+CREATE SCHEMA IF NOT EXISTS "public";
+
 -- CreateTable
 CREATE TABLE "public"."services" (
     "slug" VARCHAR(36) NOT NULL,
@@ -30,3 +33,4 @@ CREATE UNIQUE INDEX "unique_username_service" ON "public"."users"("username", "s
 
 -- AddForeignKey
 ALTER TABLE "public"."users" ADD CONSTRAINT "fk_service_slug" FOREIGN KEY ("service_slug") REFERENCES "public"."services"("slug") ON DELETE CASCADE ON UPDATE NO ACTION;
+
