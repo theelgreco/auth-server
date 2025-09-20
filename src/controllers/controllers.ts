@@ -1,5 +1,7 @@
 import crypto from "node:crypto";
 
+import { createExpressEndpoints, initServer } from "@ts-rest/express";
+
 import { createNewUser, getUser } from "../models/models.ts";
 import { hashPassword, checkPassword } from "./utils.ts";
 import { validateAndClean } from "./validation.ts";
