@@ -1,5 +1,5 @@
 import { initContract } from "@ts-rest/core";
-import { LoginPostData, LoginResponse } from "./validation.ts";
+import { LoginPostData, LoginResponse, SignUpPostData, SignUpResponse } from "./validation.ts";
 
 const contract = initContract();
 
@@ -17,9 +17,9 @@ export const authContract = contract.router({
         method: "POST",
         path: "/sign-up",
         summary: "Sign Up",
-        body: LoginPostData,
+        body: SignUpPostData,
         responses: {
-            200: LoginResponse,
+            200: SignUpResponse,
         },
     },
 });
