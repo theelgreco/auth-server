@@ -47,6 +47,8 @@ export const getUser = async (data: { emailOrUsername: string; serviceName: stri
             return await prisma.user.findUniqueOrThrow({ where: { email_serviceSlug: { email: user.email, serviceSlug } } });
         } else if (user.username) {
             return await prisma.user.findUniqueOrThrow({ where: { username_serviceSlug: { username: user.username, serviceSlug } } });
+        } else {
+            throw new Error("No user found!");
         }
     } catch (err) {
         console.error(err);
