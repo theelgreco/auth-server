@@ -10,8 +10,8 @@ datasource db {
 }
 
 model Service {
-  slug         String    @id @db.VarChar(36)
-  serviceName  String    @db.VarChar(50) @map("service_name")
+  slug         String    @id @db.VarChar(36) @default(uuid())
+  serviceName  String    @db.VarChar(50) @map("service_name") @unique
   createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
   users        User[]
 
@@ -19,7 +19,7 @@ model Service {
 }
 
 model User {
-  slug         String    @id @db.VarChar(36)
+  slug         String    @id @db.VarChar(36) @default(uuid())
   email        String    @db.VarChar(200)
   username     String?   @db.VarChar(32)
   password     String    @db.VarChar(200)
