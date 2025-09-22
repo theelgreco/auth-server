@@ -2,7 +2,7 @@
     "name": "@stelan/auth-contract",
     "version": "0.1.0",
     "license": "MIT",
-    "exports": "./mod.ts",
+    "exports": "./dist/mod.ts",
     "imports": {
         "@ts-rest/core": "npm:@ts-rest/core@^3.53.0-rc.1",
         "zod": "npm:zod@^4.1.11"
