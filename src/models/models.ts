@@ -1,86 +1,57 @@
-import { db } from "../db/connect.ts";
-import format from "pg-format";
-import { ValidationError, InvalidLoginError } from "../errors/classes.ts";
+import { prisma } from "../db/connect.ts";
+import { z } from "zod";
 
-const getService = async (service) => {
-    const service_rows = await db.query(
-        `
-        SELECT *
-        FROM services
-        WHERE service_name = $1;
-    `,
-        [service]
-    );
-
-    if (!service_rows.rows.length) {
-        throw new ValidationError(`Service '${service}' does not exist.`);
-    }
-
-    return service_rows.rows[0];
-};
-
-export const createNewUser = async (slug, email, username, password, service) => {
+export const getService = async (serviceName: string) => {
     try {
-        const service_slug = (await getService(service)).slug;
-
-        if (email) {
-            const queryString = format(
-                `
-                INSERT INTO users (slug, "email", username, password, service_slug)
-                VALUES (%L);
-            `,
-                [slug, email, username, password, service_slug]
-            );
-
-            await db.query(queryString);
-        } else {
-            const queryString = format(
-                `
-                INSERT INTO users (slug, username, password, service_name, service_slug)
-                VALUES (%L);
-            `,
-                [slug, username, password, service, service_slug]
-            );
-
-            await db.query(queryString);
-        }
-    } catch (error) {
-        throw error;
+        return await prisma.service.findFirstOrThrow({ where: { serviceName } });
+    } catch (err) {
+        console.error(err);
+        throw err;
+    } finally {
+        await prisma.$disconnect();
     }
 };
 
-export const getUser = async (email_or_username, service) => {
+export const createNewUser = async (data: { email: string; username: string; password: string; service: string }) => {
     try {
-        const service_slug = (await getService(service)).slug;
+        await prisma.user.create({ data });
+    } catch (err) {
+        console.error(err);
+        throw err;
+    } finally {
+        await prisma.$disconnect();
+    }
+};
 
-        let userQuery = await db.query(
-            `
-            SELECT *
-            FROM users
-            WHERE email = $1
-              AND service_slug = $2;
-        `,
-            [email_or_username, service_slug]
-        );
+export const getUser = async (data: { emailOrUsername: string; serviceName: string }) => {
+    const user: {
+        email?: string;
+        username?: string;
+        serviceName: string;
+    } = {
+        email: undefined,
+        username: undefined,
+        serviceName: data.serviceName,
+    };
 
-        if (!userQuery.rows.length) {
-            userQuery = await db.query(
-                `
-                SELECT *
-                FROM users
-                WHERE username = $1
-                  AND service_slug = $2;
-            `,
-                [email_or_username, service_slug]
-            );
+    try {
+        user.email = z.email().parse(data.emailOrUsername);
+    } catch {
+        user.username = data.emailOrUsername;
+    }
+
+    try {
+        const serviceSlug = (await getService(user.serviceName)).slug;
+
+        if (user.email) {
+            return await prisma.user.findUniqueOrThrow({ where: { email_serviceSlug: { email: user.email, serviceSlug } } });
+        } else if (user.username) {
+            return await prisma.user.findUniqueOrThrow({ where: { username_serviceSlug: { username: user.username, serviceSlug } } });
         }
-
-        if (!userQuery.rows.length) {
-            throw new InvalidLoginError("User does not exist");
-        }
-
-        return userQuery.rows[0];
-    } catch (error) {
-        throw error;
+    } catch (err) {
+        console.error(err);
+        throw err;
+    } finally {
+        await prisma.$disconnect();
     }
 };
