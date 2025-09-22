@@ -12,9 +12,20 @@ export const getService = async (serviceName: string) => {
     }
 };
 
-export const createNewUser = async (data: { email: string; username: string; password: string; service: string }) => {
+export const createNewUser = async ({
+    email,
+    username,
+    password,
+    serviceName,
+}: {
+    email: string;
+    username: string;
+    password: string;
+    serviceName: string;
+}) => {
     try {
-        await prisma.user.create({ data });
+        const serviceSlug = (await getService(serviceName)).slug;
+        await prisma.user.create({ data: { email, username, password, serviceSlug } });
     } catch (err) {
         console.error(err);
         throw err;
@@ -47,9 +58,10 @@ export const getUser = async (data: { emailOrUsername: string; serviceName: stri
             return await prisma.user.findUniqueOrThrow({ where: { email_serviceSlug: { email: user.email, serviceSlug } } });
         } else if (user.username) {
             return await prisma.user.findUniqueOrThrow({ where: { username_serviceSlug: { username: user.username, serviceSlug } } });
-        } else {
-            throw new Error("No user found!");
         }
+
+        // If we get here then no user was found so throw an error
+        throw new Error("No user found!");
     } catch (err) {
         console.error(err);
         throw err;
