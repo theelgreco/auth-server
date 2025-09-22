@@ -1,10 +1,10 @@
+import z from "zod";
 import { initContract } from "@ts-rest/core";
-import { z } from "zod";
 
-export const contract = initContract();
+const contract = initContract();
 
-export const LoginPostData = z.object({
-    email_or_username: z.string().or(z.email()),
+const LoginPostData = z.object({
+    emailOrUsername: z.string().or(z.email()),
     password: z.string(),
     service: z.string(),
 });
@@ -24,5 +24,3 @@ export const authContract = contract.router({
         },
     },
 });
-
-export type LoginPostDataType = z.infer<(typeof authContract)["postLogin"]["body"]>;
