@@ -1,0 +1,21 @@
+name: Publish
+on:
+    push:
+        branches:
+            - main
+        paths:
+            - "contracts/**"
+
+jobs:
+    publish:
+        runs-on: ubuntu-latest
+        defaults:
+            run:
+                working-directory: contracts
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v4
+            - name: Publish package
+              run: npx jsr publish
