@@ -1,5 +1,9 @@
 import z from "zod";
-import { ServiceName } from "../../src/generated/prisma/enums.ts";
+
+const ServiceName = {
+    ftp: "ftp",
+    income_calculator: "income_calculator",
+} as const;
 
 export const LoginPostData = z.object({
     emailOrUsername: z.string().or(z.email()),
