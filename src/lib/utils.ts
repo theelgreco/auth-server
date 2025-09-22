@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import { InvalidLoginError } from "../errors/classes.ts";
+import { InvalidLoginError } from "./errors.ts";
 
-export const hashPassword = async (password) => {
+export const hashPassword = async (password: string) => {
     return await bcrypt.hash(password, 10);
 };
 
@@ -12,7 +12,7 @@ export const hashPassword = async (password) => {
  * @throws InvalidLoginError - If the passwords don't match.
  * @returns void
  */
-export const checkPassword = async (providedPassword, storedPassword) => {
+export const checkPassword = async (providedPassword: string, storedPassword: string) => {
     const result = await bcrypt.compare(providedPassword, storedPassword);
 
     if (!result) {
