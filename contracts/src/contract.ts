@@ -1,23 +1,22 @@
-import z from "zod";
 import { initContract } from "@ts-rest/core";
+import { LoginPostData, LoginResponse } from "./validation.ts";
 
 const contract = initContract();
-
-const LoginPostData = z.object({
-    emailOrUsername: z.string().or(z.email()),
-    password: z.string(),
-    service: z.string(),
-});
-
-const LoginResponse = z.object({
-    msg: z.literal("OK"),
-});
 
 export const authContract = contract.router({
     postLogin: {
         method: "POST",
         path: "/login",
         summary: "Login",
+        body: LoginPostData,
+        responses: {
+            200: LoginResponse,
+        },
+    },
+    postSignUp: {
+        method: "POST",
+        path: "/sign-up",
+        summary: "Sign Up",
         body: LoginPostData,
         responses: {
             200: LoginResponse,
