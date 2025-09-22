@@ -5,13 +5,6 @@ export class ValidationError extends Error {
     }
 }
 
-export class KeyError extends Error {
-    constructor(message: string) {
-        super(message);
-        this.name = "KeyError";
-    }
-}
-
 export class UnauthorisedError extends Error {
     constructor(message: string) {
         super(message);

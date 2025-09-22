@@ -1,35 +1,53 @@
-import("./db/connect.ts");
-
 import process from "node:process";
 import dotenv from "dotenv";
-
-// module imports
 import express from "express";
-import logger from "morgan";
 import cors from "cors";
-import { postSignUp, postLogin } from "./controllers/controllers.ts";
-import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "./errors/middleware.ts";
+import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "./lib/middleware.ts";
+import { createExpressEndpoints, initServer } from "@ts-rest/express";
+import { authContract } from "../contracts/src/contract.ts";
+import { LoginPostData, SignUpPostData } from "../contracts/src/validation.ts";
+import { createNewUser, getUser } from "./models/models.ts";
+import { checkPassword, hashPassword } from "./lib/utils.ts";
+import { generateJWT } from "./lib/jwt.ts";
 
 dotenv.config();
 
-// setup
 const app = express();
 const PORT = process.env.PORT || 9091;
 
-// middleware
 app.use(cors());
-app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// endpoints
-app.get("/", (req, res) => {
-    res.status(200).send({ message: "Welcome!!" });
+const server = initServer();
+
+const authRouter = server.router(authContract, {
+    postLogin: async ({ body }) => {
+        const { emailOrUsername, password, serviceName } = LoginPostData.parse(body);
+
+        const user = await getUser({ emailOrUsername, serviceName });
+        await checkPassword(password, user.password);
+        const jwt = generateJWT({ user, serviceName });
+
+        return {
+            status: 200,
+            body: { jwt },
+        };
+    },
+    postSignUp: async ({ body }) => {
+        const { email, username, password, serviceName } = SignUpPostData.parse(body);
+
+        const hashedPassword = await hashPassword(password);
+        await createNewUser({ email, username, password: hashedPassword, serviceName });
+
+        return {
+            status: 200,
+            body: { msg: "OK" },
+        };
+    },
 });
 
-app.post("/sign-up", postSignUp);
-
-app.post("/login", postLogin);
+createExpressEndpoints(authContract, authRouter, app);
 
 // error-handling middleware
 app.use(handleCustomErrors);

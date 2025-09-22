@@ -10,22 +10,27 @@ datasource db {
 }
 
 model Service {
-  slug         String    @id @db.VarChar(36)
-  serviceName  String    @db.VarChar(50) @map("service_name")
+  slug         String    @id @db.VarChar(36) @default(uuid())
+  serviceName  ServiceName @map("service_name") @unique
   createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
   users        User[]
 
   @@map("services")
 }
 
+enum ServiceName {
+  ftp
+  income_calculator
+}
+
 model User {
-  slug         String    @id @db.VarChar(36)
+  slug         String    @id @db.VarChar(36) @default(uuid())
   email        String    @db.VarChar(200)
   username     String?   @db.VarChar(32)
   password     String    @db.VarChar(200)
   createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
   serviceSlug  String?   @db.VarChar(36) @map("service_slug")
-  services     Service? @relation(fields: [serviceSlug], references: [slug], onDelete: Cascade, onUpdate: NoAction, map: "fk_service_slug")
+  services     Service? @relation(fields: [serviceSlug], references: [slug], onDelete: SetNull, map: "fk_service_slug")
 
   @@unique([username, email, serviceSlug], map: "unique_email_and_username_service")
   @@unique([email, serviceSlug], map: "unique_email_service")
