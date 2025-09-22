@@ -1,3 +1,3 @@
-import { authContract } from "../src/auth.ts";
+import { authContract } from "../src/contract.ts";
 
 export default authContract;
