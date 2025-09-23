@@ -2,7 +2,7 @@ import process from "node:process";
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import { handleCustomErrors, handlePostgresErrors, handle500Errors } from "./lib/middleware.ts";
+import { handleCustomErrors, handlePostgresErrors, handle500Errors, errorLogger } from "./lib/middleware.ts";
 import { createExpressEndpoints, initServer } from "@ts-rest/express";
 import { authContract } from "../contracts/src/contract.ts";
 import { GoogleSignInData, LoginPostData, SignUpPostData } from "../contracts/src/validation.ts";
@@ -75,6 +75,7 @@ const authRouter = server.router(authContract, {
 createExpressEndpoints(authContract, authRouter, app);
 
 // error-handling middleware
+app.use(errorLogger);
 app.use(handleCustomErrors);
 app.use(handlePostgresErrors);
 app.use(handle500Errors);

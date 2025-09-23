@@ -2,11 +2,16 @@ import { NextFunction, Response, Request } from "express";
 
 type ErrorMiddlewareFunction = (error: Error & { code: number | string }, request: Request, response: Response, next: NextFunction) => void;
 
-export const handleCustomErrors: ErrorMiddlewareFunction = (error, _request, response, next) => {
+export const errorLogger: ErrorMiddlewareFunction = (error, _request, _response, next) => {
     const { message, code, name } = error;
-
     console.error(error);
     console.error(`${code} | ${name} | ${message}`);
+
+    next(error);
+};
+
+export const handleCustomErrors: ErrorMiddlewareFunction = (error, _request, response, next) => {
+    const { message, name } = error;
 
     if (name === "ValidationError") {
         response.status(400).send({ [name]: message });
