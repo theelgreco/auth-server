@@ -1,14 +1,15 @@
 import z from "zod";
 
-const ServiceName = {
-    ftp: "ftp",
-    income_calculator: "income_calculator",
-} as const;
+const ServiceNameChoices = { ftp: "ftp", income_calculator: "income_calculator" } as const;
+const serviceName = z.enum(ServiceNameChoices, "That's not a valid service");
+
+const PASSWORD_MIN_LENGTH = 8;
+const password = z.string().min(PASSWORD_MIN_LENGTH, "Must be at least 8 characters");
 
 export const LoginPostData = z.object({
     emailOrUsername: z.string().or(z.email()),
-    password: z.string(),
-    serviceName: z.enum(ServiceName),
+    password,
+    serviceName,
 });
 
 export const LoginResponse = z.object({
@@ -18,8 +19,8 @@ export const LoginResponse = z.object({
 export const SignUpPostData = z.object({
     email: z.email(),
     username: z.string(),
-    password: z.string(),
-    serviceName: z.enum(ServiceName),
+    password,
+    serviceName,
 });
 
 export const SignUpResponse = z.object({
