@@ -26,3 +26,8 @@ export const SignUpPostData = z.object({
 export const SignUpResponse = z.object({
     msg: z.literal("OK"),
 });
+
+export const GoogleSignInData = z.object({
+    token: z.string(),
+    serviceName,
+});
