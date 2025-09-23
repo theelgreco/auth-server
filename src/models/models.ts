@@ -1,7 +1,8 @@
 import { prisma } from "../db/connect.ts";
 import { z } from "zod";
+import { ServiceName } from "../generated/prisma/enums.ts";
 
-export const getService = async (serviceName: string) => {
+export const getService = async (serviceName: ServiceName) => {
     try {
         return await prisma.service.findFirstOrThrow({ where: { serviceName } });
     } catch (err) {
@@ -16,15 +17,17 @@ export const createNewUser = async ({
     username,
     password,
     serviceName,
+    image,
 }: {
     email: string;
     username: string;
     password: string;
-    serviceName: string;
+    serviceName: ServiceName;
+    image?: string;
 }) => {
     try {
         const serviceSlug = (await getService(serviceName)).slug;
-        await prisma.user.create({ data: { email, username, password, serviceSlug } });
+        return await prisma.user.create({ data: { email, username, password, serviceSlug, image } });
     } catch (err) {
         throw err;
     } finally {
@@ -32,11 +35,11 @@ export const createNewUser = async ({
     }
 };
 
-export const getUser = async (data: { emailOrUsername: string; serviceName: string }) => {
+export const getUser = async (data: { emailOrUsername: string; serviceName: ServiceName }) => {
     const user: {
         email?: string;
         username?: string;
-        serviceName: string;
+        serviceName: ServiceName;
     } = {
         email: undefined,
         username: undefined,
