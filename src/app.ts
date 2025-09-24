@@ -2,7 +2,7 @@ import process from "node:process";
 import dotenv from "dotenv";
 import express from "express";
 import cors from "cors";
-import { handleCustomErrors, handlePostgresErrors, handle500Errors, errorLogger } from "./lib/middleware.ts";
+import { handlePrismaErrors, handle500Errors, errorLogger, handleZodValidationErrors, handleCustomErrors } from "./lib/middleware.ts";
 import { createExpressEndpoints, initServer } from "@ts-rest/express";
 import { authContract } from "../contracts/src/contract.ts";
 import { GoogleSignInData, LoginPostData, SignUpPostData } from "../contracts/src/validation.ts";
@@ -72,12 +72,17 @@ const authRouter = server.router(authContract, {
     },
 });
 
-createExpressEndpoints(authContract, authRouter, app);
+createExpressEndpoints(authContract, authRouter, app, {
+    // Just passes on the error to the middleware stack. This is only invoked when the error is thrown by Zod inside the ts-rest router,
+    // otherwise the normal middleware flow occurs
+    requestValidationErrorHandler: (error, _request, _response, next) => next(error),
+});
 
 // error-handling middleware
 app.use(errorLogger);
+app.use(handleZodValidationErrors);
+app.use(handlePrismaErrors);
 app.use(handleCustomErrors);
-app.use(handlePostgresErrors);
 app.use(handle500Errors);
 
 // Listener
