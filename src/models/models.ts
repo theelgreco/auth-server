@@ -1,6 +1,9 @@
 import { prisma } from "../db/connect.ts";
 import { z } from "zod";
 import { ServiceName } from "../generated/prisma/enums.ts";
+import { PrismaClientKnownRequestError } from "../generated/prisma/internal/prismaNamespace.ts";
+import { RequestValidationError } from "@ts-rest/express";
+import { EmailTaken, UsernameTaken } from "../../contracts/src/errors.ts";
 
 export const getService = async (serviceName: ServiceName) => {
     try {
@@ -29,6 +32,18 @@ export const createNewUser = async ({
         const serviceSlug = (await getService(serviceName)).slug;
         return await prisma.user.create({ data: { email, username, password, serviceSlug, image } });
     } catch (err) {
+        if (err instanceof PrismaClientKnownRequestError) {
+            const target = err?.meta?.target as string[] | undefined;
+
+            if (target?.includes("email")) {
+                throw new RequestValidationError(null, null, null, EmailTaken);
+            }
+
+            if (target?.includes("username")) {
+                throw new RequestValidationError(null, null, null, UsernameTaken);
+            }
+        }
+
         throw err;
     } finally {
         await prisma.$disconnect();
