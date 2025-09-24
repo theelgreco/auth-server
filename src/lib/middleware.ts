@@ -1,41 +1,66 @@
 import { NextFunction, Response, Request } from "express";
+import {
+    PrismaClientInitializationError,
+    PrismaClientKnownRequestError,
+    PrismaClientRustPanicError,
+    PrismaClientUnknownRequestError,
+    PrismaClientValidationError,
+} from "@prisma/client/runtime/library";
+import { RequestValidationError } from "@ts-rest/express";
+import { ErrorNameEnum, ForbiddenError, UnauthorisedError } from "../../contracts/src/errors.ts";
 
-type ErrorMiddlewareFunction = (error: Error & { code: number | string }, request: Request, response: Response, next: NextFunction) => void;
+type WithOptionalCode<T> = T & { code?: string };
 
-export const errorLogger: ErrorMiddlewareFunction = (error, _request, _response, next) => {
-    const { message, code, name } = error;
+type ErrorMiddlewareFunction<T> = (error: T, request: Request, response: Response, next: NextFunction) => void;
+
+export const errorLogger: ErrorMiddlewareFunction<Error> = (error, _request, _response, next) => {
     console.error(error);
-    console.error(`${code} | ${name} | ${message}`);
-
     next(error);
 };
 
-export const handleCustomErrors: ErrorMiddlewareFunction = (error, _request, response, next) => {
-    const { message, name } = error;
-
-    if (name === "ValidationError") {
-        response.status(400).send({ [name]: message });
-    } else if (name === "InvalidLoginError" || name === "UnauthorisedError") {
-        response.status(401).send({ [name]: message });
-    } else if (name === "ForbiddenError") {
-        response.status(403).send({ [name]: message });
+export const handleZodValidationErrors: ErrorMiddlewareFunction<RequestValidationError> = (error, _request, response, next) => {
+    if (error.body) {
+        const { issues } = error.body;
+        response.status(400).json({ name: ErrorNameEnum.ValidationError, issues });
     } else {
         next(error);
     }
 };
 
-export const handlePostgresErrors: ErrorMiddlewareFunction = (error, _request, response, next) => {
-    const { code } = error;
+type PrismaError =
+    | WithOptionalCode<PrismaClientKnownRequestError>
+    | WithOptionalCode<PrismaClientUnknownRequestError>
+    | WithOptionalCode<PrismaClientRustPanicError>
+    | WithOptionalCode<PrismaClientInitializationError>
+    | WithOptionalCode<PrismaClientValidationError>;
 
-    if (code === "P2025") {
-        response.status(404).send({ message: "No record found" });
-    } else if (code === "P2002") {
-        response.status(400).send({ message: "This record already exists" });
+export const handlePrismaErrors: ErrorMiddlewareFunction<PrismaError> = (error, _request, response, next) => {
+    if (error instanceof PrismaClientKnownRequestError) {
+        const { code } = error;
+
+        switch (code) {
+            case "P2025":
+                response.status(404).send({ name: ErrorNameEnum.PrismaClientKnownRequestError, message: "No record found" });
+                break;
+            case "P2002":
+                response.status(400).send({
+                    name: ErrorNameEnum.PrismaClientKnownRequestError,
+                    message: `This ${(error.meta?.modelName as string).toLowerCase()} already exists`,
+                });
+                break;
+        }
     } else {
-        next();
+        next(error);
     }
 };
 
-export const handle500Errors = (_request: Request, response: Response) => {
-    response.status(500).send({ msg: "Internal server error" });
+type CustomError = ForbiddenError | UnauthorisedError;
+
+export const handleCustomErrors: ErrorMiddlewareFunction<CustomError> = (error, _request, _response, next) => {
+    // Place custom errors here in the future
+    next(error);
+};
+
+export const handle500Errors = (_error: Error, _request: Request, response: Response) => {
+    response.status(500).send({ name: ErrorNameEnum.InternalServerError, message: "Internal server error" });
 };
