@@ -14,7 +14,7 @@ export const enum ErrorNameEnum {
 // Below are the built-in/library errors.
 
 const validationError = contract.type<{
-    name: ErrorNameEnum.InternalServerError;
+    name: ErrorNameEnum.ValidationError;
     issues: z.core.$ZodIssue[];
 }>();
 
