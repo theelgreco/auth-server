@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
-import { InvalidLoginError } from "./errors.ts";
+import { WrongPassword } from "../../contracts/src/errors.ts";
+import { RequestValidationError } from "@ts-rest/express";
 
 export const hashPassword = async (password: string) => {
     return await bcrypt.hash(password, 10);
@@ -16,7 +17,7 @@ export const checkPassword = async (providedPassword: string, storedPassword: st
     const result = await bcrypt.compare(providedPassword, storedPassword);
 
     if (!result) {
-        throw new InvalidLoginError("Incorrect password");
+        throw new RequestValidationError(null, null, null, WrongPassword);
     }
 
     return result;
