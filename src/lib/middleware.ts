@@ -40,7 +40,10 @@ export const handlePrismaErrors: ErrorMiddlewareFunction<PrismaError> = (error, 
 
         switch (code) {
             case "P2025":
-                response.status(404).send({ name: ErrorNameEnum.PrismaClientKnownRequestError, message: "No record found" });
+                response.status(404).send({
+                    name: ErrorNameEnum.PrismaClientKnownRequestError,
+                    message: `No ${(error.meta?.modelName as string).toLowerCase()} matching those details`,
+                });
                 break;
             case "P2002":
                 response.status(400).send({
@@ -56,9 +59,15 @@ export const handlePrismaErrors: ErrorMiddlewareFunction<PrismaError> = (error, 
 
 type CustomError = ForbiddenError | UnauthorisedError;
 
-export const handleCustomErrors: ErrorMiddlewareFunction<CustomError> = (error, _request, _response, next) => {
-    // Place custom errors here in the future
-    next(error);
+export const handleCustomErrors: ErrorMiddlewareFunction<CustomError> = (error, _request, response, next) => {
+    if (error instanceof UnauthorisedError) {
+        response.status(401).send({
+            name: ErrorNameEnum.UnauthorisedError,
+            message: error?.message || "The request could not be authorised",
+        });
+    } else {
+        next(error);
+    }
 };
 
 export const handle500Errors = (_error: Error, _request: Request, response: Response) => {

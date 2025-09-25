@@ -10,6 +10,7 @@ import { createNewUser, getUser } from "./models/models.ts";
 import { checkPassword, hashPassword } from "./lib/utils.ts";
 import { generateJWT } from "./lib/jwt.ts";
 import { User } from "./generated/prisma/client.ts";
+import { UnauthorisedError } from "../contracts/src/errors.ts";
 
 dotenv.config();
 
@@ -52,6 +53,10 @@ const authRouter = server.router(authContract, {
         const googleResponse = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
             headers: { Authorization: `Bearer ${token}` },
         });
+
+        if (!googleResponse.ok) {
+            throw new UnauthorisedError("Your Google token could not be verified");
+        }
 
         const { email, name, picture } = await googleResponse.json();
 
