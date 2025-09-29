@@ -1,0 +1,32 @@
+# Git
+.git
+.gitignore
+
+# Node modules (if any)
+node_modules
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# IDE and editor files
+.vscode
+.idea
+*.iml
+.DS_Store
+
+# Generated files
+src/generated/prisma
+
+# Temporary files
+*.tmp
+*.log
+
+# Build artifacts
+dist
+*.drawio
+
+# Deno binary downloads
+deno-*-*.zip
+deno

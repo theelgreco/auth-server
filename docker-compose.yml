@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  auth-server:
+    build: .
+    ports:
+      - "9091:9091"
+    environment:
+      - DATABASE_URL=postgresql://postgres:password@db:5432/authdb
+      - JWT_KEY=your-secret-jwt-key-here
+      - PORT=9091
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=authdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
