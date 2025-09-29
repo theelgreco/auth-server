@@ -8,3 +8,7 @@ node_modules
 .run
 .vscode
 /src/generated/prisma
+
+# Deno binary downloads
+deno-*-*.zip
+deno
