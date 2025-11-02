@@ -1,4 +1,4 @@
-# 🔐 Enterprise-Grade Authentication Server
+# Authentication Server
 
 A production-ready, type-safe authentication microservice built with modern TypeScript best practices. This server demonstrates advanced architectural patterns, comprehensive error handling, and seamless integration capabilities for multi-service ecosystems.
 
