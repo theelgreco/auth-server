@@ -2,36 +2,36 @@
 
 A production-ready, type-safe authentication microservice built with modern TypeScript best practices. This server demonstrates advanced architectural patterns, comprehensive error handling, and seamless integration capabilities for multi-service ecosystems.
 
-## ✨ Key Features
+## Key Features
 
-### 🛡️ Security & Authentication
+### Security & Authentication
 - **JWT Authentication**: Secure token-based authentication with HS256 algorithm
 - **Password Security**: Industry-standard bcrypt hashing with configurable salt rounds
 - **Google OAuth Integration**: Seamless third-party authentication via Google Sign-In
 - **Multi-Service Architecture**: Isolated user authentication across multiple applications
 
-### 🔍 Type Safety & Validation
+### Type Safety & Validation
 - **End-to-End Type Safety**: Full TypeScript implementation with strict typing
 - **Runtime Validation**: Zod schema validation for all request/response data
 - **Contract-First Design**: Type-safe API contracts using ts-rest
 - **Prisma ORM**: Type-safe database queries with generated client types
 - **Custom Error Types**: Structured error handling with domain-specific error classes
 
-### 🏗️ Architecture & Design
+### Architecture & Design
 - **RESTful API Design**: Clean, resource-oriented endpoints
 - **Middleware Pipeline**: Comprehensive error handling with specialized middleware
 - **Database Abstraction**: Prisma ORM with PostgreSQL
 - **Separation of Concerns**: Clean architecture with distinct layers (routes, models, middleware, utils)
 - **Contract Distribution**: Publishable type-safe contracts via JSR
 
-### 🚀 Developer Experience
+### Developer Experience
 - **Deno Runtime**: Modern JavaScript runtime with native TypeScript support
 - **Hot Reload**: Development mode with automatic reloading
 - **Migration Management**: Automated database migrations with Prisma
 - **Environment Configuration**: Secure configuration via dotenv
 - **CORS Support**: Cross-origin resource sharing enabled
 
-## 📚 Technology Stack
+## Technology Stack
 
 ### Core Technologies
 - **Runtime**: [Deno](https://deno.land/) - Secure runtime for JavaScript and TypeScript
@@ -47,7 +47,7 @@ A production-ready, type-safe authentication microservice built with modern Type
 - **Password Hashing**: [bcrypt](https://github.com/kelektiv/node.bcrypt.js) - Secure password hashing
 - **CORS**: [cors](https://github.com/expressjs/cors) - Cross-origin resource sharing
 
-## 🏛️ Architecture Overview
+## Architecture Overview
 
 ### API Contract Layer (`contracts/`)
 ```
@@ -86,7 +86,7 @@ src/
 - **Services**: Multi-tenant service management
 - **Unique Constraints**: Email/username uniqueness per service
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### POST `/login`
 Authenticate user with email/username and password.
@@ -145,7 +145,7 @@ Authenticate or register via Google OAuth.
 }
 ```
 
-## 🚦 Error Handling
+## Error Handling
 
 The server implements a comprehensive error handling pipeline:
 
@@ -165,7 +165,7 @@ The server implements a comprehensive error handling pipeline:
 }
 ```
 
-## 🛠️ Setup & Installation
+## Setup & Installation
 
 ### Prerequisites
 - [Deno](https://deno.land/) (latest version)
@@ -198,7 +198,7 @@ deno task start
 deno task compile
 ```
 
-## 📊 Development Highlights
+## Development Highlights
 
 ### Type Safety
 Every request and response is validated at runtime and compile time, ensuring:
@@ -247,7 +247,7 @@ import authContract from "@stelan/auth-contract";
 // Full type safety in client applications
 ```
 
-## 🎯 Why This Project Demonstrates Strong Engineering
+## Why This Project Demonstrates Strong Engineering
 
 1. **Modern Tech Stack**: Leverages cutting-edge technologies (Deno, Prisma, ts-rest)
 2. **Type Safety**: End-to-end type safety from database to API to client
@@ -258,10 +258,10 @@ import authContract from "@stelan/auth-contract";
 7. **Developer Experience**: Hot reload, migrations, type safety improve productivity
 8. **Production Ready**: Proper logging, error handling, and environment configuration
 
-## 📝 License
+## License
 
 MIT
 
-## 🤝 Contributing
+## Contributing
 
 This project showcases professional-grade authentication service implementation. Feel free to explore the code to see best practices in action!
