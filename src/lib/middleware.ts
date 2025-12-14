@@ -1,13 +1,14 @@
 import { NextFunction, Response, Request } from "express";
+
+import { RequestValidationError } from "@ts-rest/express";
+import { ErrorNameEnum, ForbiddenError, UnauthorisedError } from "../../contracts/src/errors.ts";
 import {
     PrismaClientInitializationError,
     PrismaClientKnownRequestError,
     PrismaClientRustPanicError,
     PrismaClientUnknownRequestError,
     PrismaClientValidationError,
-} from "@prisma/client/runtime/library";
-import { RequestValidationError } from "@ts-rest/express";
-import { ErrorNameEnum, ForbiddenError, UnauthorisedError } from "../../contracts/src/errors.ts";
+} from "../generated/prisma/internal/prismaNamespace.ts";
 
 type WithOptionalCode<T> = T & { code?: string };
 
