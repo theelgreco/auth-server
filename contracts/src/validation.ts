@@ -35,3 +35,7 @@ export const GoogleSignInData = z.object({
 export const SignUpGuestPostData = z.object({
     serviceName,
 });
+
+export const SignUpGuestResponse = z.object({
+    email: z.email(),
+});

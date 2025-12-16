@@ -1,4 +1,12 @@
-import { GoogleSignInData, LoginPostData, LoginResponse, SignUpGuestPostData, SignUpPostData, SignUpResponse } from "./validation.ts";
+import {
+    GoogleSignInData,
+    LoginPostData,
+    LoginResponse,
+    SignUpGuestPostData,
+    SignUpGuestResponse,
+    SignUpPostData,
+    SignUpResponse,
+} from "./validation.ts";
 import { contract } from "./init.ts";
 import { commonErrorType } from "./errors.ts";
 
@@ -37,7 +45,7 @@ export const authContract = contract.router(
             summary: "Sign up as a guest",
             body: SignUpGuestPostData,
             responses: {
-                200: SignUpResponse,
+                200: SignUpGuestResponse,
             },
         },
     },

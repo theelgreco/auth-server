@@ -83,11 +83,11 @@ const authRouter = server.router(authContract, {
         const username = slug;
         const password = await hashPassword("");
 
-        await createNewUser({ email, username, password, serviceName, isGuest: true });
+        const user = await createNewUser({ email, username, password, serviceName, isGuest: true });
 
         return {
             status: 200,
-            body: { msg: "OK" },
+            body: { email: user.email },
         };
     },
 });
