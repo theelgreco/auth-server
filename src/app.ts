@@ -11,6 +11,7 @@ import { checkPassword, hashPassword } from "./lib/utils.ts";
 import { generateJWT } from "./lib/jwt.ts";
 import { User } from "./generated/prisma/client.ts";
 import { UnauthorisedError } from "../contracts/src/errors.ts";
+import { randomUUID } from "node:crypto";
 
 dotenv.config();
 
@@ -73,6 +74,20 @@ const authRouter = server.router(authContract, {
         return {
             status: 200,
             body: { jwt },
+        };
+    },
+    postSignUpAsGuest: async ({ body }) => {
+        const { serviceName } = body;
+        const slug = randomUUID();
+        const email = `${slug}@fidelio.club`;
+        const username = slug;
+        const password = await hashPassword("");
+
+        await createNewUser({ email, username, password, serviceName, isGuest: true });
+
+        return {
+            status: 200,
+            body: { msg: "OK" },
         };
     },
 });

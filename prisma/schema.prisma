@@ -31,6 +31,7 @@ model User {
   createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
   serviceSlug  String?   @db.VarChar(36) @map("service_slug")
   services     Service? @relation(fields: [serviceSlug], references: [slug], onDelete: SetNull, map: "fk_service_slug")
+  isGuest      Boolean @default(false) @map("is_guest")
 
   @@unique([username, email, serviceSlug], map: "unique_email_and_username_service")
   @@unique([email, serviceSlug], map: "unique_email_service")

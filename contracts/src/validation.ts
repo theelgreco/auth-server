@@ -31,3 +31,7 @@ export const GoogleSignInData = z.object({
     token: z.string(),
     serviceName,
 });
+
+export const SignUpGuestPostData = z.object({
+    serviceName,
+});

@@ -21,16 +21,18 @@ export const createNewUser = async ({
     password,
     serviceName,
     image,
+    isGuest = false,
 }: {
     email: string;
     username: string;
     password: string;
     serviceName: ServiceName;
+    isGuest?: boolean;
     image?: string;
 }) => {
     try {
         const serviceSlug = (await getService(serviceName)).slug;
-        return await prisma.user.create({ data: { email, username, password, serviceSlug, image } });
+        return await prisma.user.create({ data: { email, username, password, serviceSlug, image, isGuest } });
     } catch (err) {
         if (err instanceof PrismaClientKnownRequestError) {
             const target = err?.meta?.target as string[] | undefined;
