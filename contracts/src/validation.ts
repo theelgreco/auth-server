@@ -8,7 +8,7 @@ const password = z.string().min(PASSWORD_MIN_LENGTH, "Must be at least 8 charact
 
 export const LoginPostData = z.object({
     emailOrUsername: z.string().or(z.email()),
-    password,
+    password: z.string(),
     serviceName,
 });
 
