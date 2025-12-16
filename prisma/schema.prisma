@@ -25,7 +25,7 @@ enum ServiceName {
 model User {
   slug         String    @id @db.VarChar(36) @default(uuid())
   email        String    @db.VarChar(200)
-  username     String?   @db.VarChar(32)
+  username     String?   @db.VarChar(36)
   image        String?
   password     String    @db.VarChar(200)
   createdAt    DateTime? @default(now()) @db.Timestamptz(6) @map("created_at")
